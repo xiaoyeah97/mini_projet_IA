@@ -1,0 +1,11 @@
+# Apple
+.DS_Store
+
+# Tex
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+
+Recursive Inference Engines in Prolog
