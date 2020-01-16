@@ -1,0 +1,444 @@
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper]{geometry}
+\usepackage{babel}
+
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{mathdots}
+
+\usepackage{cancel}
+\usepackage{color}
+
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{tabularx}
+\usepackage{booktabs}
+%\usepackage{yhmath}
+%\usepackage{siunitx}
+\usetikzlibrary{fadings}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shadows.blur}
+
+
+\begin{document}
+
+
+\thispagestyle{empty}
+
+
+\vspace*{7cm}
+\begin{center}
+	{\huge Mini projet d'Intelligence artificielle}
+\end{center}
+
+\begin{center}
+	{\Large \textit{Co-bicyclage}}
+\end{center}
+
+
+\begin{center}
+	{\normalsize 2019-2020}
+\end{center}
+
+
+
+\vspace*{10cm}
+
+\begin{center}
+	\begin{tabular}{ l l }
+		\textbf{Auteurs} & Yejing XIE (SILR4-2)\\ & Thomas PEUZIAT (SILR4-2)\\
+	\end{tabular}
+\end{center}
+
+\newpage
+\strut
+\thispagestyle{empty}
+
+\section{Première partie}
+
+\subsection{Ensembles}
+\noindent
+$ $$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+P\ :\ ensemble\ des\ propriétaires\\
+C\ :\ ensemble\ des\ capacités\ des\ vélos\\
+T\ :\ ensembles\ des\ trajets\ des\ propriétaires\\
+U\ :\ ensemble\ des\ usagers\\
+L\ :\ ensemble\ des\ lieux\\
+V\ :\ ensemble\ des\ voisins\ du\ lieu\\
+H\ :\ ensemble\ des\ heures
+\end{array}$
+
+\vspace*{0.3cm}
+\noindent
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+\forall n\in \mathbb{N}^{*\ } ,( p_{1} ,\ p_{2} ,\ ...\ ,\ p_{n}) \in P^{n}\\
+\forall n\in \mathbb{N}^{*\ } ,( c_{1} ,\ c_{2} ,\ ...\ ,\ c_{n}) \in C^{n} ,\ \forall c_{i} \in C,\ 2\leqq c_{i} \leqq c_{max}\\
+\forall n\in \mathbb{N}^{*\ } ,( t_{1} ,\ t_{2} ,\ ...\ ,\ t_{n}) \in T^{n} ,\ \forall k\in \mathbb{N}^{*} ,\ t_{i} =( l_{1} ,\ l_{2} ,\ ...\ ,\ l_{k}) \in L^{k}\\
+\forall m\in \mathbb{N}^{*\ } ,( u_{1} ,\ u_{2} ,\ ...\ ,\ u_{m}) \in U^{m}\\
+\forall r\in \mathbb{N}^{*\ } ,( v_{1} ,\ v_{2} ,\ ...\ ,\ v_{n}) \in V^{n} ,\ \forall k\in \mathbb{N}^{*} ,\ v_{i} =( l_{1} ,\ l_{2} ,\ ...\ ,\ l_{k}) \in L^{k}\\
+\forall r\in \mathbb{N}^{*\ } ,( l_{1} ,\ l_{2} ,\ ...\ ,\ l_{n}) \in L^{n}\\
+\forall s\in \mathbb{N}^{*} ,\ ( h_{1} ,\ h_{2} ,\ ...\ ,\ h_{s}) \in H^{s} ,\ \forall h_{s} \in H,\ h_{s} \in \mathbb{R}^{+} \land 0\leqq h_{s} < 24
+\end{array}$
+
+
+\subsection{Fonctions}
+\noindent
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+c\ :\ P\rightarrow C.\\La\ capacité\ de\ vélo\ d'un\ propriétaire.\\
+\\
+t\ :\ P\rightarrow T.\\Le\ trajet\ d'un\ propriétaire.\\
+\\
+l_{ts} :\ t( P) \times L\rightarrow L.\\Le\ lieu\ suivant\ dans\ le\ trajet\ d'un\ propriétaire\\
+\\
+v\ :\ L\rightarrow V.\\Les\ voisins\ d'un\ lieu.\\
+\\
+y\ :\ P\rightarrow \mathbb{N}^{*} .\\Le\ nombre\ de\ personne\ sur\ ce\ vélo\\
+\\
+p_{u} \ :\ U\rightarrow P.\\Le\ propriétaire\ associé/chargé\ d'un\ usager.\\
+\\
+h_{pt} \ :\ P\times L\rightarrow H.\\L'heure\ d'arrivée\ à\ un\ lieu\ d'un\ propriétaire.\\
+\\
+l_{m} \ :\ U\rightarrow L.\\Le\ lieu\ d'arrivée\ d'un\ usager( maison) .\\
+\\
+l_{t} \ :\ U\rightarrow L.\\Le\ lieu\ de\ départ\ d'un\ usager( travail) .\\
+\\
+l_{c} \ :\ U\rightarrow L.\\Le\ lieu\ courant\ d'un\ usager.\\
+\\
+l_{s} \ :\ U\rightarrow L.\\Le\ lieu\ suivant\ d'un\ usager.\\
+\\
+h_{max} \ :\ U\rightarrow H.\\L'heure\ maximale\ d'arrivée\ d'un\ usager.\\
+\\
+t_{p} \ :\ L\times L\rightarrow \mathbb{N}^{*} .\\Le\ temps\ à\ pied\ entre\ deux\ lieux.\\
+\\
+t_{v} \ :\ L\times L\times \mathbb{N}^{*}\rightarrow \mathbb{N}^{*} .\\Le\ temps\ en\ vélo\ entre\ deux\ lieux.
+\end{array}$
+
+\newpage
+\subsection{États}
+\noindent
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+e\ =\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ l_{1})\\
+( u_{2} ,\ p_{u}( u_{2}) ,\ l_{c}( u_{2}) ,\ l_{s}( u_{2}) ,\ l_{2})\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix} \in E=( U\times P\times L\times L\times H)^{m} ,\\
+\end{array}$\\
+\\
+Un état correspond donc à l'ensemble des usagers, des propriétaires associés à ces usagers, des lieux courants, des lieux suivants, des heures actuelles.\\
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+i\ =\begin{pmatrix}
+( u_{1} ,\ \emptyset ,\ l_{m}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+( u_{2} ,\ \emptyset ,\ l_{m}( u_{2}) ,\ l_{s}( u_{2}) ,\ h_{2})\\
+...\\
+\ ( u_{m} ,\ \emptyset ,\ l_{m}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{pmatrix}\\
+\end{array}$\\
+\\
+Un état initial correspond à un état dont les usagers ne sont pas associés à des propriétaires (ne sont pas sur des vélos), dont les lieux courants sont leurs maisons respectives.\\
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+F=\begin{Bmatrix}
+\begin{pmatrix}
+( u_{1} ,\ \emptyset ,\ l_{c}( u_{1}) ,\ l_{t}( u_{1}) ,\ h_{1})\\
+( u_{2} ,\ \emptyset ,\ l_{c}( u_{2}) ,\ l_{t}( u_{2}) ,\ h_{2})\\
+...\\
+\ ( u_{m} ,\ \emptyset ,\ l_{c}( u_{m}) ,\ l_{t}( u_{m}) ,\ h_{m})
+\end{pmatrix}
+\end{Bmatrix} ,\ \forall i\in \mathbb{N}^{*} ,h_{i} \leqq h_{max}( i)
+\end{array}$\\
+\\
+Un état final correspond à un état dont les usagers ne sont pas associés à des propriétaires (ne sont pas sur des vélos), dont les lieux suivants sont leurs travails respectifs, avec des heures inférieurs à leurs heures maximales d'arrivées.\\
+\vspace*{0.5cm}
+\\
+
+\subsection{Opérations}
+\subsubsection{Méthode 1}
+\noindent
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+rouler:\\
+\begin{matrix}
+E\nrightarrow E\\
+\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,p_{u}( u_{i}) ,l_{c}( u_{i}) ,l_{s}( u_{i}) ,h_{i})\\
+...\\
+\ ( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}\rightarrow \begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,p_{u}( u_{i}) ,l_{s}( u_{i}) ,l_{s}( u_{i}) ',h_{i} +t_{v}( l_{c}( u_{i}) ,l_{s}( u_{i}),p_{u}( u_{i})))\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}
+\end{matrix} \ 
+\end{array}$\\
+\\
+Un usager avance d'un lieu à vélo (lieu courant devient lieu suivant et lieu suivant devient le prochain lieu suivant), on ajoute à l'heure actuelle le temps à vélo entre le lieu courant et le lieu suivant.
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+marcher:
+\begin{matrix}
+E\nrightarrow E\\
+\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i})\\
+...\\
+\ ( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}\rightarrow \begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ \emptyset ,\ l_{s}( u_{i}) ,\ l_{s}( u_{i}) ',h_{i} +t_{p}( l_{c}( u_{i}) ,l_{s}( u_{i})) \ )\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}
+\end{matrix} \ 
+\end{array}$\\
+\\
+Un usager avance d'un lieu à pied (lieu courant devient lieu suivant, et lieu suivant devient le prochain lieu suivant), on ajoute à l'heure actuelle le temps à pied entre le lieu courant et le lieu suivant.
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+monter:
+\begin{matrix}
+E\nrightarrow E\\
+\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i})\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}\rightarrow \begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{pt}( p_{u}( u_{i}) ,l_{c}( u_{i})))\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}
+\end{matrix} \ 
+\end{array}$\\
+\\
+Un usager monte sur un vélo, l'heure actuelle devient l'heure d'arrivée à un lieu du propriétaire choisit, le lieu suivant change potentiellement.
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+changer:
+\begin{matrix}
+E\nrightarrow E\\
+\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i})\\
+...\\
+\ ( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}\rightarrow \begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ p_{u}( u_{i}) ',\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{pt}( p_{u} '( u_{i}) ,l_{c}( u_{i})))\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}
+\end{matrix} \ 
+\end{array}$\\
+\\
+Un usager change de vélo, l'heure actuelle devient l'heure d'arrivée à un lieu du propriétaire choisit, le lieu suivant change potentiellement.
+\vspace*{0.5cm}
+\\
+$\displaystyle  \begin{array}{{>{\displaystyle}l}}
+descendre:
+\begin{matrix}
+E\nrightarrow E\\
+\begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i})\\
+...\\
+\ ( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}\rightarrow \begin{Bmatrix}
+( u_{1} ,\ p_{u}( u_{1}) ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ,\ h_{1})\\
+...\\
+( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{i})\\
+...\\
+( u_{m} ,\ p_{u}( u_{m}) ,\ l_{c}( u_{m}) ,\ l_{s}( u_{m}) ,\ h_{m})
+\end{Bmatrix}
+\end{matrix} \ 
+\end{array}$\\
+\\
+Un usager descend du vélo, le lieu suivant change potentiellement.
+\vspace*{0.5cm}
+\\
+
+\subsubsection{Méthode 2}
+Ce sont les mêmes opérations mais écrites d'une façon différente.\\
+
+
+\noindent
+$\displaystyle rouler:$
+$\displaystyle \begin{matrix}
+E\times \mathbb{N}_{n}\rightarrow E\\
+\begin{Bmatrix}
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i}) ,\ i
+\end{Bmatrix}\rightarrow ( u_{i} ,p_{u}( u_{i}) ,l_{s}( u_{i}) ,l_{s}( u_{i}) ',h_{i} +t_{v}( l_{c}( u_{i}) ,l_{s}( u_{i}),p_{u}( u_{i})))
+\end{matrix}$\\
+\\
+\vspace*{0.5cm}
+\\
+$\displaystyle marcher:$
+$\displaystyle \begin{matrix}
+E\times \mathbb{N}_{n}\rightarrow E\\
+\begin{Bmatrix}
+( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i}) ,\ i
+\end{Bmatrix}\rightarrow ( u_{i} ,\ \emptyset ,\ l_{s}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{i} +t_{p}( l_{c}( u_{i}) ,l_{s}( u_{i}))
+\end{matrix}$\\
+\\
+\vspace*{0.5cm}
+\\
+$\displaystyle monter:$
+$\displaystyle \begin{matrix}
+E\times \mathbb{N}_{n}\rightarrow E\\
+\begin{Bmatrix}
+( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i}) ,\ i
+\end{Bmatrix}\rightarrow ( u_{i} ,\ p_{i} ,\ l_{c}( u_{1}) ,\ l_{s}( u_{1}) ',\ h_{pt}( p_{u}( u_{i}) ,l_{c}( u_{i})))
+\end{matrix}$\\
+\\
+\vspace*{0.5cm}
+\\
+$\displaystyle changer:$
+$\displaystyle \begin{matrix}
+E\times \mathbb{N}_{n}\rightarrow E\\
+\begin{Bmatrix}
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i}) ,\ i
+\end{Bmatrix}\rightarrow ( u_{i} ,\ p_{u}( u_{i}) ',\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{pt}( p_{u}( u_{i}) ',l_{c}( u_{i})))
+\end{matrix}$\\
+\\
+\vspace*{0.5cm}
+\\
+$\displaystyle descendre:$
+$\displaystyle \begin{matrix}
+E\times \mathbb{N}_{n}\rightarrow E\\
+\begin{Bmatrix}
+( u_{i} ,\ p_{u}( u_{i}) ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ,\ h_{i}) ,\ i
+\end{Bmatrix}\rightarrow ( u_{i} ,\ \emptyset ,\ l_{c}( u_{i}) ,\ l_{s}( u_{i}) ',\ h_{i})
+\end{matrix}$\\
+
+
+
+
+\subsection{Pré-conditions}
+\noindent
+$\displaystyle pré-rouler:\begin{matrix}
+O\times E\rightarrow \mathcal{B}\\
+\begin{Bmatrix}
+p_{u}( u_{i}) \neq \emptyset \land \\
+l_{c}( u_{i}) \neq l_{t}( u_{i}) \land \\
+l_{s}( u_{i}) =l_{ts}( t( p_{u}( u_{i})) ,l_{c}( u_{i})) \land \\
+l_{s} '( u_{i}) =l_{ts}( t( p_{u}( u_{i})) ,l_{s}( u_{i})) \land \\
+h_{i} +t_{v}( l_{c}( u_{i}),l_{s}( u_{i}) ,y( p_{u}( u_{i}))) < h_{max}( u_{i})
+\end{Bmatrix}
+\end{matrix}$\\
+\\
+L'usager doit être associé à un propriétaire (donc sur un vélo), son lieu courant ne doit pas être son travail, son lieu suivant correspond au lieu suivant de son lieu courant sur le trajet de son propriétaire, son prochain lieu suivant correspond au lieu suivant de son lieu suivant sur le trajet de son propriétaire, l'heure actuelle ajoutée au temps de trajet doit être inférieur à son heure d'arrivée maximale.
+\vspace*{0.5cm}
+\\
+$\displaystyle pré-marcher:\begin{matrix}
+O\times E\rightarrow \mathcal{B}\\
+\begin{Bmatrix}
+l_{c}( u_{i}) \neq l_{t}( u_{i}) \land \\
+l_{s}( u_{i}) \in v( l_{c}( u_{i})) \land \\
+l_{s} '( u_{i}) \in v( l_{s}( u_{i})) \land \\
+h_{i} +t_{p}( l_{c}( u_{i}) ,l_{s}( u_{i})) < h_{max}( u_{i})
+\end{Bmatrix}
+\end{matrix}$\\
+\\
+Le lieu courant de l'usager ne doit pas être son travail, son lieu suivant doit appartenir aux voisins de son lieu courant, son prochain lieu suivant doit appartenir aux voisins de son lieu suivant, l'heure actuelle ajoutée au temps de trajet doit être inférieur à son heure d'arrivée maximale.
+\vspace*{0.5cm}
+\\
+$\displaystyle pré-monter:\begin{matrix}
+O\times E\rightarrow \mathcal{B}\\
+\begin{Bmatrix}
+p_{u}( u_{i}) = \emptyset \land \\
+l_{c}( u_{i}) \neq l_{t}( u_{i}) \land \\
+l_{s} '( u_{i}) =l_{ts}( t( p_{u}( u_{i})) ,l_{c}( u_{i})) \land \\
+h_{pt}( p_{u}( u_{i}) ,l_{c}( u_{i})) < h_{max}( u_{i})
+\end{Bmatrix}
+\end{matrix}$\\
+\\
+L'usager ne doit être associé à un propriétaire (donc sur à pied), son lieu courant ne doit pas être son travail, son nouveau lieu suivant correspond au lieu suivant de son lieu courant sur le trajet de son propriétaire, l'heure d'arrivée du propriétaire à son lieu courant doit être inférieur à son heure d'arrivée maximale.
+\vspace*{0.5cm}
+\\
+$\displaystyle pré-changer:\begin{matrix}
+O\times E\rightarrow \mathcal{B}\\
+\begin{Bmatrix}
+p_{u}( u_{i}) \neq \emptyset \land \\
+p_{u} '( u_{i}) \neq \emptyset \land \\
+l_{c}( u_{i}) \neq l_{t}( u_{i}) \land \\
+l_{c}( u_{i}) \neq l_{m}( u_{i}) \land \\
+h_{pt}( p_{u}( u_{i}) ,l_{c}( u_{i})) \leqslant h_{pt}( p_{u} '( u_{i}) ,l_{c}( u_{i})) \land \\
+l_{s} '( u_{i}) =l_{ts}( t( p_{u}( u_{i})) ,l_{c}( u_{i})) \land \\
+h_{pt}( p_{u} '( u_{i}) ,l_{c}( u_{i})) < h_{max}( u_{i})
+\end{Bmatrix}
+\end{matrix}$\\
+\\
+L'usager doit être associé à un propriétaire (donc sur un vélo), le propriétaire suivant ne doit pas être nul, son lieu courant ne doit pas être son travail, son lieu courant ne doit pas être sa maison, le propriétaire actuelle doit arriver avant le propriétaire suivant au lieu courant de l'usager, son nouveau lieu suivant correspond au lieu suivant de son lieu courant sur le trajet de son propriétaire, l'heure d'arrivée du propriétaire suivant à son lieu courant doit être inférieur à son heure d'arrivée maximale.
+\vspace*{0.5cm}
+\\
+$\displaystyle pré-descendre:\begin{matrix}
+O\times E\rightarrow \mathcal{B}\\
+\begin{Bmatrix}
+p_{u}( u_{i}) \neq \emptyset \land \\
+l_{c}( u_{i}) \neq l_{m}( u_{i}) \land \\
+l_{s} '( u_{i}) \in v( l_{c}( u_{i}))
+\end{Bmatrix}
+\end{matrix}$\\
+\\
+L'usager doit être associé à un propriétaire (donc sur un vélo), son lieu courant ne doit pas être sa maison, son nouveau lieu suivant doit appartenir aux voisins de son lieu courant.\\
+
+\subsection{Coûts}
+\noindent
+$\displaystyle coût-rouler:\begin{matrix}
+O\times E\rightarrow \mathbb{R}^{+}\\
+t_{v}( l_{s}(u_{i}) ,l_{s}(u_{i}) ',y( p_{u}( u_{i}))
+\end{matrix}$\\\\\\
+$\displaystyle coût-marcher:\begin{matrix}
+O\times E\rightarrow \mathbb{R}^{+}\\
+t_{p}( l_{s}( u_{i}) ,l_{s} '( u_{i}))
+\end{matrix}$\\\\\\
+$\displaystyle coût-monter:\begin{matrix}
+O\times E\rightarrow \mathbb{R}^{+}\\
+h_{pt}( p_{u}( u_{i}) ,l_{c}( u_{i})) -h_{i}
+\end{matrix}$\\\\\\
+$\displaystyle coût-changer:\begin{matrix}
+O\times E\rightarrow \mathbb{R}^{+}\\
+h_{pt}( p_{u} '( u_{i}) ,l_{c}( u_{i})) -h_{i}
+\end{matrix}$\\\\\\
+$\displaystyle coût-descendre:\begin{matrix}
+O\times E\rightarrow \mathbb{R}^{+}\\
+0
+\end{matrix}$\\
+
+\subsection{Méthode de résolution de recherche en graphe d’états}
+\noindent
+Dans le cas d’une recherche en graphe d’états, trouver une solution consiste à trouver une séquence d’opérations conduisant d’un état initial i à un état final e appartenant à F.\\
+On peut résumer cette solution en :\\
+$\displaystyle\begin{matrix}
+s =(i=e_{0},e_{1}, ... ,e{n}=e)
+\end{matrix}$\\
+De façon naïve, on pourrait générer toutes les possibilités et tester s’il s’agit de solutions. Néanmoins, la taille du graphe d’état serait tellement importante qu’un algorithme naïf est à proscrire. Il faut donc inclure des contraintes permettant de réduire la taille de l’espace de recherche exploré.\\
+De plus, dans ce sujet il n’est pas uniquement nécessaire de trouver une solution, mais surtout de trouver une meilleure solution, possédant un coût minimal.\\
+Il est donc nécessaire de réaliser des heuristiques et recherches informées.\\
+
+\section{Deuxième partie}
+\subsection{Heuristiques}
+\subsection{Passage à l'échelle}
+\end{document}
