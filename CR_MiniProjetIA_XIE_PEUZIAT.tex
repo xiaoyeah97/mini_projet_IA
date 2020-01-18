@@ -443,12 +443,25 @@ Il est donc nécessaire de réaliser des heuristiques et recherches informées.\
 Dans cette partie qui consistent à implémenter une solution, nous n'allons pas utiliser notre conception du problème car complexe mais utiliser la conception fournie par M. MARTINEZ. Cette conception met en œuvre des parcours virtuels et des parcours réels. De plus, on en prend pas en compte ni capacité maximale des vélos des propriétaires ni le gain de vitesse lié à une plus grande occupation des vélos.
 
 \subsection{Heuristique}
-Nous avons choisi d'implémenter une heuristique lié au calcul du plus court chemin. \\Pour cela nous allons utiliser l'algorithme de Dijkstra entre les nœuds de départ Usager et leurs nœuds d'arrivée.
+Nous avons choisi d'implémenter une heuristique lié au calcul du plus court chemin. \\
+Pour cela nous allons utiliser l'algorithme de Dijkstra entre les nœuds de départ Usager et leurs nœuds d'arrivée couplé à la méthode de recherche séparation et évaluation (branch and bound).
+
+\subsubsection{Séparation et évaluation}
+Cette méthode de recherche permet d'énumérer les solutions possibles et d'oublier les solutions impossibles. Ainsi, il y a deux étapes : la séparation et l'évaluation.
+
+La séparation permet de structurer les différentes solutions comme un arbre de solutions et donc de n'oublier aucunes solutions. Cependant cette arbre est parfois trop grand pour être exploré (comme dans ce problème).
+
+L'évaluation va elle permettre de ne pas prendre en compte les solutions qui vont être non optimales ou inintéressantes et donc de ne pas explorer les branches de solutions qui en découlent. Pour cela, un "coût" va être attribué à "nœuds" de solutions.
+
+\subsubsection{Recherche du plus court chemin : Dijkstra}
+Nous allons donc utiliser l'algorithme de Dijkstra pour guider la méthode de recherche en calculant le coût qu'une solution peut avoir, en calculant le plus court chemin.
+
+Ainsi pour chaque parcours virtuel nous allons calculer le plus court chemin entre le point de départ et celui d'arrivée via l'algorithme de Dijkstra. La distance, correspondant au plus court chemin disponible,  obtenue deviendra le coût de ce parcours et donc de cette solution.
 
 \subsection{Passage à l'échelle}
 L'utilisation de l'algorithme de Dijkstra va augmenter la complexité de notre programme. Ainsi, on borne la complexité minimale de notre algorithme à celui de Dijkstra, c'est à dire $O((a+n)\log{}n)$ avec $a$ le nombre d'arêtes et $n$ le nombre de nœuds.\\
 \\
-Néanmoins l'utilisation de cet heuristique améliore de façon importante le temps de calcul d'une méthode branch and bound.\\\\
+Néanmoins l'utilisation de cet heuristique améliore de façon importante le temps de calcul d'une méthode branch and bound.
 
 \subsubsection{Temps de calculs}
 \noindent\textbf{Cobicyclage instance} :
@@ -456,55 +469,51 @@ Néanmoins l'utilisation de cet heuristique améliore de façon importante le te
 \textbf{Random instance 89} :
 86 Tronçons, 6 Propriétaires, 7 Usagers.\\
 \textbf{Random instance 52} :
-102 Tronçons, 6 Propriétaires, 8 Usagers.\\
-\begin{table}
+102 Tronçons, 6 Propriétaires, 8 Usagers.\\\\
+
+\begin{table}[h]
 	\begin{center}
 		{\renewcommand{\arraystretch}{3}
 		\begin{tabular}{|c|c|c|}
 			\hline
 			\textbf{Cobicyclage instance - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
 			\hline
-			Branch and bound - "sans" heuristique & 5mn10s & A\\
+			Séparation et évaluation - "sans" heuristique & 5mn10s & A\\
 			\hline
-			Branch and bound - avec heuristique Dijkstra & <1s & A\\
+			Séparation et évaluation - avec heuristique Dijkstra & <1s & A\\
 			\hline
 		\end{tabular}}
 	\end{center}
 \end{table}
 
-
-
-
-\begin{table}
+\begin{table}[h]
 	\begin{center}
 		{\renewcommand{\arraystretch}{3}
 		\begin{tabular}{|c|c|c|}
 			\hline
 			\textbf{Random instance 89 - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
 			\hline
-			Branch and bound - "sans" heuristique & ??? & A\\
+			Séparation et évaluation - "sans" heuristique & >6h & A\\
 			\hline
-			Branch and bound - avec heuristique Dijkstra & 11s & A\\
+			Séparation et évaluation - avec heuristique Dijkstra & 11s & A\\
 			\hline
 		\end{tabular}}
 	\end{center}
 \end{table}
 
-
-\begin{table}
+\begin{table}[h]
 	\begin{center}
 		{\renewcommand{\arraystretch}{3}
 		\begin{tabular}{|c|c|c|}
 			\hline
 			\textbf{Random instance 52 - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
 			\hline
-			Branch and bound - "sans" heuristique & ??? & A\\
+			Séparation et évaluation - "sans" heuristique & ??? & A\\
 			\hline
-			Branch and bound - avec heuristique Dijkstra & 28s & A\\
+			Séparation et évaluation - avec heuristique Dijkstra & 28s & A\\
 			\hline
 		\end{tabular}}
 	\end{center}
 \end{table}
-
 
 \end{document}
