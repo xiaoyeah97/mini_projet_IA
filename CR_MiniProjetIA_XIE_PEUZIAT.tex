@@ -439,6 +439,72 @@ De plus, dans ce sujet il n’est pas uniquement nécessaire de trouver une solu
 Il est donc nécessaire de réaliser des heuristiques et recherches informées.\\
 
 \section{Deuxième partie}
-\subsection{Heuristiques}
+\subsection{Modifications}
+Dans cette partie qui consistent à implémenter une solution, nous n'allons pas utiliser notre conception du problème car complexe mais utiliser la conception fournie par M. MARTINEZ. Cette conception met en œuvre des parcours virtuels et des parcours réels. De plus, on en prend pas en compte ni capacité maximale des vélos des propriétaires ni le gain de vitesse lié à une plus grande occupation des vélos.
+
+\subsection{Heuristique}
+Nous avons choisi d'implémenter une heuristique lié au calcul du plus court chemin. \\Pour cela nous allons utiliser l'algorithme de Dijkstra entre les nœuds de départ Usager et leurs nœuds d'arrivée.
+
 \subsection{Passage à l'échelle}
+L'utilisation de l'algorithme de Dijkstra va augmenter la complexité de notre programme. Ainsi, on borne la complexité minimale de notre algorithme à celui de Dijkstra, c'est à dire $O((a+n)\log{}n)$ avec $a$ le nombre d'arêtes et $n$ le nombre de nœuds.\\
+\\
+Néanmoins l'utilisation de cet heuristique améliore de façon importante le temps de calcul d'une méthode branch and bound.\\\\
+
+\subsubsection{Temps de calculs}
+\noindent\textbf{Cobicyclage instance} :
+60 Tronçons, 6 Propriétaires, 3 Usagers.\\
+\textbf{Random instance 89} :
+86 Tronçons, 6 Propriétaires, 7 Usagers.\\
+\textbf{Random instance 52} :
+102 Tronçons, 6 Propriétaires, 8 Usagers.\\
+\begin{table}
+	\begin{center}
+		{\renewcommand{\arraystretch}{3}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\textbf{Cobicyclage instance - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
+			\hline
+			Branch and bound - "sans" heuristique & 5mn10s & A\\
+			\hline
+			Branch and bound - avec heuristique Dijkstra & <1s & A\\
+			\hline
+		\end{tabular}}
+	\end{center}
+\end{table}
+
+
+
+
+\begin{table}
+	\begin{center}
+		{\renewcommand{\arraystretch}{3}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\textbf{Random instance 89 - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
+			\hline
+			Branch and bound - "sans" heuristique & ??? & A\\
+			\hline
+			Branch and bound - avec heuristique Dijkstra & 11s & A\\
+			\hline
+		\end{tabular}}
+	\end{center}
+\end{table}
+
+
+\begin{table}
+	\begin{center}
+		{\renewcommand{\arraystretch}{3}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			\textbf{Random instance 52 - Méthode} & \textbf{Temps de calcul} & \textbf{Machine}\\
+			\hline
+			Branch and bound - "sans" heuristique & ??? & A\\
+			\hline
+			Branch and bound - avec heuristique Dijkstra & 28s & A\\
+			\hline
+		\end{tabular}}
+	\end{center}
+\end{table}
+
+
 \end{document}
