@@ -30,7 +30,7 @@
  *                      :                     | Heure maximale : heure   |
  *                      :                     | Minute maximale : minute |
  *                      :                     +--------------------------+
- *                      :                                 ^            ^ 
+ *                      :                                 ^            ^
  *                      :                                 :            :
  *                      : Propriétaire <= Personne mobile :            : Usager <= Personne mobile
  *                      :                                 :            :
@@ -41,8 +41,8 @@
  *                      : | Propriétaire                        |   | Usager                   |
  *                      : +-------------------------------------+   +--------------------------+
  *                      : | Propriétaire : atom                 |   | Usager : atom            |
- *                      : | Places : natural > 1                |   +--------------------------+   
- *                      : | Lieu activité := last(Étapes).Étape | 
+ *                      : | Places : natural > 1                |   +--------------------------+
+ *                      : | Lieu activité := last(Étapes).Étape |
  *                      : | Heure de départ : heure := ...      |
  *                      : | Minute de départ : minute := ...    |
  *                      : +-------------------------------------+
@@ -143,7 +143,7 @@
                      ]).
 
 %! troncon(?O:  atom,  ?D:  atom,  ?T:  natural) is nondet.
-% 
+%
 % L'ensemble des tronçons constitue la carte (ou graphe) sur laquelle évolue les acteurs.
 %
 % Cela constitue l'un des trois principaux prédicats de description du problème, dans sa forme dite "complexe".
@@ -157,7 +157,7 @@
 %
 
 %! parcours_reel(?P:  atom,  ?D:  domicile,  ?C:  natural,  ?H_max:  horaire,  ?ES:  list(etape(E:  noeud, T:  duree))) is nondet.
-% 
+%
 % Un parcours réel décrit précisément les étapes du parcours de chaque propriétaire entre son domicile et son lieu d'activité.
 % Un parcours réel débute au domicile puis enchaîne un certain nombre, non nul, d'étapes, de durées non nulles, la dernière étape étant implicitement le lieu d'activité.
 %
@@ -178,7 +178,7 @@
 %
 
 %! parcours_virtuel(?S:  atom,  ?D:  domicile,  ?A:  activite,  ?H_max:  horaire) is nondet.
-% 
+%
 % Un parcours virtuel décrit le besoin de déplacement d'un usager sans vélo.
 %
 % Cela constitue l'un des trois principaux prédicats de description du problème, dans sa forme dite "complexe".
@@ -195,6 +195,8 @@
 
 % Les données doivent être fournies en extension dans ce fichier.
 :- include('cobicyclage_instance.pl').
+% :- include('random_instance_52.pl').
+% :- include('random_instance_89.pl').
 
 :- begin_tests(troncons).
 
@@ -226,7 +228,7 @@ test(typage_parcours_reel) :-
                       , atom(D)                         % et son domicile doivent être des atomes,
                       , integer(C)                      % la capacité de son vélo est un entier
                       , C > 1                           % naturel au moins égal à deux
-                      , horaire(H_max)                  
+                      , horaire(H_max)
                       , forall( member(etape(E, T), ES)
                               , ( atom(E)               % toutes les étapes de son parcours sont des atomes
                                 , duree(T)              % et chaque temps de parcours une durée valide
@@ -299,7 +301,7 @@ test(proprietaires_usagers_distincts) :-
 :- end_tests(parcours_reels_virtuels).
 
 %! noeud(?N:  noeud) is nondet.
-% 
+%
 % Ensemble des noeuds constituant la carte ou graphe des déplacements.
 %
 % @arg N  Identifiant d'un noeud du graphe
@@ -328,7 +330,7 @@ test(noeuds_dans_troncons) :-
 :- end_tests(noeuds).
 
 %! domicile(?D:  noeud) is nondet.
-% 
+%
 % Sous-ensemble des noeuds, 'noeuds/1', qui sont associés au domicile d'un propriétaire ou d'un usager.
 %
 % @arg D  Identifiant d'un domicile.
@@ -358,7 +360,7 @@ test(sont_associes) :-
 :- end_tests(domiciles).
 
 %! proprietaire(?P:  atom,  ?D:  noeud,  ?A:  noeud,  ?C:  natural,  ?H_max:  horaire,  ?H_min:  horaire) is nondet.
-% 
+%
 % Sous-ensemble des personnes mobiles qui sont propriétaires d'un vélo avec quelques informations associées.
 %
 % @arg P       Identifiant d'un propriétaire.
@@ -433,7 +435,7 @@ test(heure_depart_strictement_inferieure_heure_maximale_arrivee) :-
 :- end_tests(proprietaires).
 
 %! usager(?S:  atom,  ?D:  noeud,  ?A:  noeud,  ?H_max:  heure) is nondet.
-% 
+%
 % Sous-ensemble des personnes mobiles qui ne sont _pas_ propriétaires d'un vélo avec quelques informations associées.
 %
 % @arg S       Identifiant d'un usager.
@@ -475,7 +477,7 @@ test(usager_lieux_differents) :-
 :- end_tests(usagers).
 
 %! personne_mobile(?M:  atom,  ?D:  atom,  ?A:  atom,  ?H_max:  horaire) is nondet.
-% 
+%
 % L'ensemble des personnes concernées par des problèmes de mobilité.
 %
 % @arg M        Identifiant d'une personne mobile.
@@ -512,7 +514,7 @@ test(disjonction) :-
 :- end_tests(personnes_mobiles).
 
 %! etape(?P:  proprietaire, ?O:  noeud,  ?D:  noeud, ?T:  duree,  ?H:  horaire) is nondet.
-% 
+%
 % Ensemble des étapes qu'un propriétaire doit parcourir entre son domicile et son lieu d'activité, incluant les temps de transport à vide.
 %
 % @arg P  Identifiant d'un propriétaire.
@@ -581,4 +583,3 @@ test(heure_arrivee_derniere_etape_correcte) :-
              , personnes_mobiles
              , etapes
              ]).
-

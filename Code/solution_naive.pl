@@ -8,7 +8,7 @@
 
 :- use_module(solver_common, [ is_solution/4
                              , solution_cost/2
-                             ]).                
+                             ]).
 
 :- use_module(solver_naive, [ solver/4 ]).
 

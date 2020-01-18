@@ -8,13 +8,13 @@
 
 :- use_module(solver_common, [ is_solution/4
                              , solution_cost/2
-                             ]).    
+                             ]).
 
 :- use_module(solver_informed_branch_and_bound, [ solver/5
                                                 , solver/6
                                                 , no_evaluation_heuristic/2
                                                 ]).
-                                                
+
 :- use_module(cobicyclage_analyse, [ troncon/3
                                , etape/5
                                , parcours_reel/5
@@ -28,22 +28,12 @@
 
 solve :-
    initial_state(I),
-   % writef("Initial state:  %t\n", [I]),
-%    jugs_max_bound(B),
-%    writef("Max bound:  %t\n", [B]),
    solver(final_state, operation, heuristic_dij, I, S),
    writef("Solution:  %t\n", [S]),
    cobicyclage_pretty_solution(I, S),
-   % writef("i.e., %t\n", [S]),
-%    is_solution(jugs_problem:final_state, jugs_problem:operation, I, S),
    solution_cost(S, C),
    writef("for a total cost of %t.\n", [C]).
 
-%! jugs_max_bound(?B:  int) is det.
-%
-% Some maximal liters of water to be used in order to solve the jug problem.
-%
-% jugs_max_bound(1000).
 
 heuristic_dij(state(VS,RS), Cout) :-
    c_vs(VS, Cout).
@@ -55,7 +45,7 @@ c_vs([virtuel(S, D, X, H_max_X)|VS], Cout_V):-
    c_vs(VS, Cout_VS),
    Cout_V is Cout_VS + Cout_L.
 
-   
+
 
 
 % Dijkstra
@@ -83,7 +73,7 @@ dijk( Visited, Fin, RShortestPath, Len) :-
   %   et appel récursif au prédicat
   %
 
-  bestCandidate(Visited, BestCandidate), 
+  bestCandidate(Visited, BestCandidate),
   dijk( [BestCandidate|Visited], Fin, RShortestPath, Len).
 
 
@@ -100,7 +90,7 @@ dijk( Visited, Fin, RShortestPath, Len) :-
 bestCandidate(Paths, BestCandidate) :-
 
   % à partir d'un point P1 :
-  
+
   findall(
      NP            % on fait la liste de tous les points P2 tels que:
   ,
